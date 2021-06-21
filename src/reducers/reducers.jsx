@@ -1,34 +1,66 @@
+import _ from 'lodash';
 import { combineReducers } from "redux";
+import { handleActions } from "redux-actions";
+import * as actions from '../actions/actions.jsx';
 
-const text = (state = '', action) => {
-	switch (action.type) {
-		case 'TEXT_UPDATE': {
-			return action.payload.text;
-		}
-		case 'TASK_ADD': {
-			return '';
-		}
-		default:
-			return state;
-	}
+// TEXT REDUCERS MOUNTING
+const textState = '';
+
+const addTaskTextHandler = () => {
+	return '';
 };
 
-const tasks = (state = [], action) => {
-	switch (action.type) {
-		case 'TASK_ADD': {
-			const { task } = action.payload;
-			return [ task, ...state];
-		}
-		case 'TASK_REMOVE': {
-			const { id } = action.payload;
-			return state.filter((task) => task.id !== id);
-		}
-		default:
-			return state;
-	}
+const updateNewTaskTextHandler = (state, { payload: { text } }) => {
+	return text;
 };
+
+const textHandlers = {
+	[actions.addTask]: addTaskTextHandler,
+	[actions.updateNewTaskText]: updateNewTaskTextHandler,
+};
+
+const textReducer = handleActions(textHandlers, textState);
+
+// TASKS REDUCERS MOUNTING
+const tasksState = { 
+	byId: {},
+	allIds: [],
+};
+
+const addTaskHandler = (state, { payload: { task } }) => {
+	const { byId, allIds } = state;
+	return {
+		byId: { ...byId, [task.id]: task },
+		allIds: [task.id, ...allIds],
+	};
+};
+
+const removeTaskHandler = (state, { payload: { id } }) => {
+	const { byId, allIds } = state;
+	return {
+		byId: _.omit(byId, id),
+		allIds: _.without(allIds, id),
+	};
+};
+
+const toggleTaskStateHandler = (state, { payload: { id } }) => {
+	const { byId, allIds } = state;
+	const newTaskState = byId[id].state === 'active' ? 'inactive' : 'active';
+	return {
+		byId: { ...byId, [id]: { ...byId[id], state: newTaskState } },
+		allIds: [...allIds],
+	};
+};
+
+const tasksHandlers = {
+	[actions.addTask]: addTaskHandler,
+	[actions.removeTask]: removeTaskHandler,
+	[actions.toggleTaskState]: toggleTaskStateHandler,
+};
+
+const tasksReducer = handleActions(tasksHandlers, tasksState);
 
 export default combineReducers({
-	text,
-	tasks,
+	text: textReducer,
+	tasks: tasksReducer,
 });

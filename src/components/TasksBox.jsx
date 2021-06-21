@@ -1,34 +1,39 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import * as actions from '../actions/actions';
 
-const mapStateToProps = (state) => {
-	const { tasks, text } = state;
-	const props = {
-		tasks,
+const mapStateToProps = ({ tasks, text }) => {
+	const { allIds, byId } = tasks;
+	return { 
+		tasks: allIds.map((id) => byId[id]),
 		text,
-	}
-	return props;
+	};
 };
 
 const actionCreators = {
 	addTask: actions.addTask,
 	removeTask: actions.removeTask,
 	updateNewTaskText: actions.updateNewTaskText,
+	toggleTaskState: actions.toggleTaskState,
 };
 
-const TasksBox = ({ tasks, handleRemoveTask }) => {
+const TasksBox = ({ tasks, handleToggleTaskState, handleRemoveTask }) => {
+	console.log(tasks);
 	if (tasks.length === 0) {
 		return null;
 	}
+
 	return (
 		<div className="mt-3">
 			<ul className="list-group">
-				{tasks.map(({ id, text }) => (
+				{tasks.map(({ id, text, state }) => (
 					<li key={id} className="list-group-item d-flex">
-						<span className="mr-auto">{text}</span>
+						<span className="mr-auto">
+							<a href="#" onClick={handleToggleTaskState(id)}>
+                {state === 'active' ? text : <s>{text}</s>}
+              </a>
+						</span>
 						<button type="button" className="btn-close" aria-label="Close" onClick={handleRemoveTask(id)} />
 					</li>
 				))}
@@ -37,22 +42,24 @@ const TasksBox = ({ tasks, handleRemoveTask }) => {
 	)
 }
 
-const App = ({ text, tasks, addTask, updateNewTaskText, removeTask }) => {
+const App = ({ text, tasks, addTask, updateNewTaskText, removeTask, toggleTaskState }) => {
+	const handleToggleTaskState = (id) => () => {
+		toggleTaskState({ id });
+	};
+
 	const handleAddTask = (e) => {
 		e.preventDefault();
-		addTask({
-				text,
-				id: _.uniqueId('task_'),
-			},
-		);
+    const task = { text, id: _.uniqueId(), state: 'active' };
+    addTask({ task });
 	};
 
 	const handleInput = (e) => {
-		updateNewTaskText(e.target.value);
+		const text = e.target.value;
+		updateNewTaskText({ text });
 	};
 
 	const handleRemoveTask = (id) => () => {
-		removeTask(id); 
+		removeTask({ id }); 
 	};
 
 	return (
@@ -63,7 +70,7 @@ const App = ({ text, tasks, addTask, updateNewTaskText, removeTask }) => {
 				</div>
 				<button type="submit" className="btn btn-primary btn-sm">Add</button>
 			</form>
-			<TasksBox tasks={tasks} handleRemoveTask={handleRemoveTask}  />
+			<TasksBox tasks={tasks} handleRemoveTask={handleRemoveTask} handleToggleTaskState={handleToggleTaskState} />
 		</div>
 	);
 };

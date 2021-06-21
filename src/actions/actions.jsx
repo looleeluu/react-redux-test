@@ -1,20 +1,9 @@
-export const updateNewTaskText = (text) => ({
-  type: 'TEXT_UPDATE',
-  payload: {
-    text,
-  },
-});
+import { createAction } from 'redux-actions';
 
-export const addTask = (task) => ({
-	type: 'TASK_ADD',
-	payload: {
-		task,
-	},
-});
+export const addTask = createAction('TASK_ADD');
 
-export const removeTask = (id) => ({
-	type: 'TASK_REMOVE',
-	payload: {
-		id,
-	},
-});
+export const updateNewTaskText = createAction('TEXT_UPDATE');
+
+export const removeTask = createAction('TASK_REMOVE');
+
+export const toggleTaskState = createAction('TASK_STATE_TOGGLE');
