@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import * as actions from '../actions/actions';
 
@@ -12,14 +11,19 @@ const mapStateToProps = ({ tasks, text }) => {
 };
 
 const actionCreators = {
-	addTask: actions.addTask,
 	removeTask: actions.removeTask,
-	updateNewTaskText: actions.updateNewTaskText,
 	toggleTaskState: actions.toggleTaskState,
 };
 
-const TasksBox = ({ tasks, handleToggleTaskState, handleRemoveTask }) => {
-	console.log(tasks);
+const TasksBox = ({ tasks, removeTask, toggleTaskState }) => {
+	const handleToggleTaskState = (id) => () => {
+		toggleTaskState({ id });
+	};;
+
+	const handleRemoveTask = (id) => () => {
+		removeTask({ id }); 
+	};;
+
 	if (tasks.length === 0) {
 		return null;
 	}
@@ -42,37 +46,4 @@ const TasksBox = ({ tasks, handleToggleTaskState, handleRemoveTask }) => {
 	)
 }
 
-const App = ({ text, tasks, addTask, updateNewTaskText, removeTask, toggleTaskState }) => {
-	const handleToggleTaskState = (id) => () => {
-		toggleTaskState({ id });
-	};
-
-	const handleAddTask = (e) => {
-		e.preventDefault();
-    const task = { text, id: _.uniqueId(), state: 'active' };
-    addTask({ task });
-	};
-
-	const handleInput = (e) => {
-		const text = e.target.value;
-		updateNewTaskText({ text });
-	};
-
-	const handleRemoveTask = (id) => () => {
-		removeTask({ id }); 
-	};
-
-	return (
-		<div className="col-5">
-			<form action="" className="row m-5 g-3" onSubmit={handleAddTask} >
-				<div className="form-group mx-sm-3">
-					<input className="form-control" type="text" required value={text} onChange={handleInput} />
-				</div>
-				<button type="submit" className="btn btn-primary btn-sm">Add</button>
-			</form>
-			<TasksBox tasks={tasks} handleRemoveTask={handleRemoveTask} handleToggleTaskState={handleToggleTaskState} />
-		</div>
-	);
-};
-
-export default connect(mapStateToProps, actionCreators)(App);
+export default connect(mapStateToProps, actionCreators)(TasksBox);
