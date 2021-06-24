@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions/actions';
@@ -32,9 +33,9 @@ const TasksBox = ({ tasks, removeTask, toggleTaskState }) => {
 		<div className="mt-3">
 			<ul className="list-group">
 				{tasks.map(({ id, text, state }) => (
-					<li key={id} className="list-group-item d-flex">
+					<li key={id} className="list-group-item d-flex justify-content-between">
 						<span className="mr-auto">
-							<a href="#" onClick={handleToggleTaskState(id)}>
+							<a href="#str" onClick={handleToggleTaskState(id)}>
                 {state === 'active' ? text : <s>{text}</s>}
               </a>
 						</span>

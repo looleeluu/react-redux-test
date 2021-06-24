@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -25,9 +26,11 @@ const NewTaskForm = ({ text, addTask, updateNewTaskText }) => {
   };
 
 	return (
-    <form action="" className="form-inline" onSubmit={handleAddTask}>
+    <form action="" className="d-flex" onSubmit={handleAddTask}>
       <div className="form-group mx-sm-3">
         <input
+          className="form-control form-control-lg"
+          placeholder="Enter Your task..."
           type="text"
           required
           value={text}
