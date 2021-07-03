@@ -1,21 +1,20 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import * as actions from '../actions/actions';
 
 const mapStateToProps = ({ text }) => {
-	const props = { text };
-	return props;
+  const props = { text };
+  return props;
 };
 
 const actionCreators = {
-	addTask: actions.addTask,
-	updateNewTaskText: actions.updateNewTaskText,
+  addTask: actions.addTask,
+  updateNewTaskText: actions.updateNewTaskText,
 };
 
 const NewTaskForm = ({ text, addTask, updateNewTaskText }) => {
-	const handleAddTask = (e) => {
+  const handleAddTask = (e) => {
     e.preventDefault();
     const task = { text, id: _.uniqueId(), state: 'active' };
     addTask({ task });
@@ -25,7 +24,7 @@ const NewTaskForm = ({ text, addTask, updateNewTaskText }) => {
     updateNewTaskText({ text: e.target.value });
   };
 
-	return (
+  return (
     <form action="" className="d-flex" onSubmit={handleAddTask}>
       <div className="form-group mx-sm-3">
         <input
@@ -37,7 +36,7 @@ const NewTaskForm = ({ text, addTask, updateNewTaskText }) => {
           onChange={handleUpdateNewTaskText}
         />
       </div>
-      <input type="submit" className="btn btn-primary btn-sm" value="Add" />
+      <input type="submit" className="btn btn-primary" value="Add Task" />
     </form>
   );
 };

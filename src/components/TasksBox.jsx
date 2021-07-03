@@ -1,50 +1,72 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { connect } from 'react-redux';
+import cn from 'classnames';
+import { tasksSelector } from '../selectors/index';
 import * as actions from '../actions/actions';
 
-const mapStateToProps = ({ tasks, text }) => {
-	const { allIds, byId } = tasks;
-	return { 
-		tasks: allIds.map((id) => byId[id]),
-		text,
-	};
+const mapStateToProps = (state) => {
+  const { tasksUiState } = state;
+  return {
+    tasksUiState,
+    tasks: tasksSelector(state),
+  };
 };
 
 const actionCreators = {
-	removeTask: actions.removeTask,
-	toggleTaskState: actions.toggleTaskState,
+  removeTask: actions.removeTask,
+  inverseTaskTheme: actions.inverseTaskTheme,
+  toggleTaskState: actions.toggleTaskState,
 };
 
-const TasksBox = ({ tasks, removeTask, toggleTaskState }) => {
-	const handleToggleTaskState = (id) => () => {
-		toggleTaskState({ id });
-	};;
+const TasksBox = ({
+  tasks, tasksUiState, removeTask, inverseTaskTheme, toggleTaskState,
+}) => {
+  const handleTaskState = (id) => () => {
+    toggleTaskState({ id });
+  };
 
-	const handleRemoveTask = (id) => () => {
-		removeTask({ id }); 
-	};;
+  const handleRemoveTask = (id) => () => {
+    removeTask({ id });
+  };
 
-	if (tasks.length === 0) {
-		return null;
-	}
+  const handleInverseTaskTheme = (id) => () => {
+    inverseTaskTheme({ id });
+  };
 
-	return (
-		<div className="mt-3">
-			<ul className="list-group">
-				{tasks.map(({ id, text, state }) => (
-					<li key={id} className="list-group-item d-flex justify-content-between">
-						<span className="mr-auto">
-							<a href="#str" onClick={handleToggleTaskState(id)}>
-                {state === 'active' ? text : <s>{text}</s>}
-              </a>
-						</span>
-						<button type="button" className="btn-close" aria-label="Close" onClick={handleRemoveTask(id)} />
-					</li>
-				))}
-			</ul>
-		</div>
-	)
-}
+  const renderTask = (task) => {
+    const { text, id, state } = task;
+    const currentTheme = tasksUiState[id].theme;
+
+    const classes = cn({
+      'list-group-item d-flex justify-content-between': true,
+      [`list-group-item-${currentTheme}`]: true,
+    });
+
+    const linkClass = cn({
+      'link-dark': currentTheme === 'light',
+      'link-primary': currentTheme === 'primary',
+    });
+
+    return (
+      <li key={id} className={classes}>
+        <div className="d-inline">
+          <input className="form-check-input mx-2" type="checkbox" value="" onChange={handleTaskState(id)} />
+          <a href="/#" className={linkClass} onClick={handleInverseTaskTheme(id)}>{state === 'finished' ? <s>{text}</s> : text}</a>
+        </div>
+        <button type="button" className="btn-close" aria-label="Close" onClick={handleRemoveTask(id)} />
+      </li>
+    );
+  };
+
+  if (tasks.length === 0) return null;
+
+  return (
+    <div className="mt-3">
+      <ul className="list-group">
+        {tasks.map(renderTask)}
+      </ul>
+    </div>
+  );
+};
 
 export default connect(mapStateToProps, actionCreators)(TasksBox);
