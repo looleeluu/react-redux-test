@@ -21,7 +21,7 @@ const NewTaskForm = ({ addTask, reset, handleSubmit }) => {
   };
 
   return (
-    <form action="" className="d-flex justify-content-md-center" onSubmit={handleSubmit(onSubmit)}>
+    <form action="" className="d-flex justify-content-md-center mb-5" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group mx-sm-3 col-5">
         <Field className="form-control" name="text" required component="input" type="text" placeholder="Enter your task..." />
       </div>

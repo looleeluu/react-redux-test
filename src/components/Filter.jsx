@@ -34,7 +34,7 @@ const Filter = ({ currentFilterName, setTaskFilter }) => {
   };
 
   return (
-    <div className="mt-3 d-flex justify-content-around">
+    <div className="d-flex justify-content-around">
       {filters.map(checkCurrentFilter)}
     </div>
   );

@@ -38,7 +38,7 @@ const TasksBox = ({
     const currentTheme = tasksUiState[id].theme;
 
     const classes = cn({
-      'list-group-item d-flex justify-content-between col-5': true,
+      'list-group-item d-flex justify-content-between': true,
       [`list-group-item-${currentTheme}`]: true,
     });
 
