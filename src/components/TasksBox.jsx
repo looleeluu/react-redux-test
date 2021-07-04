@@ -1,25 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
-import { tasksSelector } from '../selectors/index';
+import { filteredTasksSelector } from '../selectors/index';
 import * as actions from '../actions/actions';
 
 const mapStateToProps = (state) => {
   const { tasksUiState } = state;
   return {
     tasksUiState,
-    tasks: tasksSelector(state),
+    tasks: filteredTasksSelector(state),
   };
 };
 
 const actionCreators = {
   removeTask: actions.removeTask,
-  inverseTaskTheme: actions.inverseTaskTheme,
+  toggleTaskTheme: actions.toggleTaskTheme,
   toggleTaskState: actions.toggleTaskState,
 };
 
 const TasksBox = ({
-  tasks, tasksUiState, removeTask, inverseTaskTheme, toggleTaskState,
+  tasks, tasksUiState, removeTask, toggleTaskTheme, toggleTaskState,
 }) => {
   const handleTaskState = (id) => () => {
     toggleTaskState({ id });
@@ -29,8 +29,8 @@ const TasksBox = ({
     removeTask({ id });
   };
 
-  const handleInverseTaskTheme = (id) => () => {
-    inverseTaskTheme({ id });
+  const handleTaskTheme = (id) => () => {
+    toggleTaskTheme({ id });
   };
 
   const renderTask = (task) => {
@@ -38,7 +38,7 @@ const TasksBox = ({
     const currentTheme = tasksUiState[id].theme;
 
     const classes = cn({
-      'list-group-item d-flex justify-content-between': true,
+      'list-group-item d-flex justify-content-between col-5': true,
       [`list-group-item-${currentTheme}`]: true,
     });
 
@@ -51,7 +51,7 @@ const TasksBox = ({
       <li key={id} className={classes}>
         <div className="d-inline">
           <input className="form-check-input mx-2" type="checkbox" value="" onChange={handleTaskState(id)} />
-          <a href="/#" className={linkClass} onClick={handleInverseTaskTheme(id)}>{state === 'finished' ? <s>{text}</s> : text}</a>
+          <a href="/#" className={linkClass} onClick={handleTaskTheme(id)}>{state === 'finished' ? <s>{text}</s> : text}</a>
         </div>
         <button type="button" className="btn-close" aria-label="Close" onClick={handleRemoveTask(id)} />
       </li>
